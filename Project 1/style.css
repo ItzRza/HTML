@@ -1,0 +1,82 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Sayfa ortalama */
+body {
+  height: 100vh;
+  display: flex;
+  justify-content: center;  /* yatay ortala */
+  align-items: center;      /* dikey ortala */
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #f0f0f0;
+}
+
+/* Form kutusu */
+.container {
+  background: white;
+  padding: 30px;
+  border-radius: 12px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.2);
+  width: 400px;
+}
+
+/* Başlık ortalansın */
+.container h1 {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+/* Label ve inputları yan yana hizala */
+form {
+  display: grid;
+  grid-template-columns: 150px 1fr; /* sol sütun label, sağ sütun input */
+  gap: 10px 15px; /* satır ve sütun aralığı */
+  align-items: center; /* label ve inputları aynı hizaya getirir */
+}
+
+/* Input stilleri */
+input[type="text"],
+input[type="email"],
+input[type="tel"],
+input[type="password"] {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+}
+
+/* Submit butonu */
+input[type="submit"], #sumbita {
+  grid-column: span 2; /* buton 2 sütunu da kaplasın */
+  padding: 10px;
+  background: #0ea5a4;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+input[type="submit"]:hover {
+  background: #0b807f;
+}
+
+/* Alt link ortalansın */
+.container a {
+  display: block;
+  text-align: center;
+  margin-top: 10px;
+  color: #0ea5a4;
+  text-decoration: none;
+}
+.container a:hover {
+  text-decoration: underline;
+}
+
+.container{
+  box-shadow: #622c82 0 0 50px 15px;
+  border: #7b3d9f 5px solid;
+}
