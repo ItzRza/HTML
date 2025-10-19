@@ -50,7 +50,7 @@ input[type="password"] {
 }
 
 /* Submit butonu */
-input[type="submit"], #sumbita {
+input[type="submit"], #sumbita, #button1 {
   grid-column: span 2; /* buton 2 sütunu da kaplasın */
   padding: 10px;
   background: #0ea5a4;

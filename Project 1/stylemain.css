@@ -1,0 +1,55 @@
+h1{
+    font-family: Arial, Helvetica, sans-serif;
+    color: white;
+
+}
+
+html, body {
+    height: 100%;
+    margin: 0;
+    overflow: hidden;
+  }
+
+  body {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-family: system-ui, sans-serif;
+    text-align: center;
+
+    /* Gradient tanımı (birçok renk) */
+    background: radial-gradient(circle at 20% 20%, #ff00ff, transparent 50%),
+                radial-gradient(circle at 80% 30%, #00ffff, transparent 50%),
+                radial-gradient(circle at 40% 80%, #ffff00, transparent 50%),
+                radial-gradient(circle at 60% 60%, #ff0000, transparent 50%),
+                radial-gradient(circle at 30% 50%, #800080, transparent 50%),
+                radial-gradient(circle at 70% 70%, #00ff00, transparent 50%);
+
+    background-blend-mode: screen;
+    background-size: 200% 200%;
+    animation: renkPatlamasi 8s infinite alternate ease-in-out;
+  }
+
+  /* Rastgele yönlerde gradient akışı */
+  @keyframes renkPatlamasi {
+    0% {
+      background-position: 0% 0%, 50% 50%, 100% 100%, 20% 80%, 80% 20%, 40% 60%;
+    }
+    25% {
+      background-position: 100% 50%, 0% 100%, 80% 20%, 60% 0%, 10% 90%, 50% 50%;
+    }
+    50% {
+      background-position: 50% 100%, 100% 0%, 0% 50%, 70% 90%, 30% 10%, 90% 60%;
+    }
+    75% {
+      background-position: 0% 50%, 80% 80%, 100% 20%, 10% 40%, 50% 0%, 20% 90%;
+    }
+    100% {
+      background-position: 50% 0%, 0% 0%, 100% 100%, 80% 50%, 0% 100%, 50% 50%;
+    }
+  }
+
+p{
+    font-size: 36px;
+}
