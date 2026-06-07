@@ -69,7 +69,7 @@
         }
         .logo span { color: var(--primary); }
 
-        /* AXTARIŞ */
+        /* AXTARIŞ (Dynamic) */
         .search-wrapper {
             position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);
             width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;
@@ -188,6 +188,7 @@
             <div class="icon-btn" onclick="toggleTheme()">
                 <i class="fas fa-moon" id="themeIcon"></i>
             </div>
+
             <span id="greeting" style="font-size:0.9rem; font-weight:600; color:var(--primary)"></span>
             <div class="icon-btn" id="authBtn" onclick="openAuth('login')"><i class="far fa-user"></i></div>
             <div class="icon-btn" id="logoutBtn" onclick="logout()" style="display:none; color:#ff3b30"><i class="fas fa-sign-out-alt"></i></div>
@@ -199,9 +200,9 @@
     </nav>
 
     <section class="hero">
-        <h1>Premium Təcrübə.</h1>
+        <h1>Premium Alış-veriş.</h1>
         <p>Texnologiya və stilin mükəmməl harmoniyası.</p>
-        <button class="cta-btn" onclick="document.getElementById('market').scrollIntoView()">Alış-verişə Başla</button>
+        <button class="cta-btn" onclick="document.getElementById('market').scrollIntoView()">Kəşf Et</button>
     </section>
 
     <div class="container" id="market">
@@ -217,7 +218,7 @@
             <div onclick="toggleCart()" style="cursor:pointer; font-size:1.5rem; color:var(--text-muted); background:var(--input-bg); width:35px; height:35px; border-radius:50%; display:flex; align-items:center; justify-content:center">&times;</div>
         </div>
         <div style="flex-grow:1; overflow-y:auto" id="cartItems">
-            <p style="text-align:center; color:var(--text-muted); margin-top:50px">Səbətiniz boşdur.</p>
+            <p style="text-align:center; color:var(--text-muted); margin-top:50px">Hələ ki boşdur.</p>
         </div>
         <div style="margin-top:20px; padding-top:20px; border-top:1px solid var(--border-color)">
             <div style="display:flex; justify-content:space-between; font-weight:700; font-size:1.4rem; margin-bottom:20px; color:var(--text-main)">
@@ -254,10 +255,11 @@
     </div>
 
     <script>
-        // DİQQƏT: Dırnaq işarələrinə fikir ver!
-        const API_URL = "/api"; // Artıq tam link yazmağa ehtiyac yoxdur
+        // --- NETLIFY FIX: RELATIVE PATH ---
+        const API_URL = "/api"; 
+        // ----------------------------------
         
-        // Offline şəkil
+        // Offline placeholder şəkil (SVG)
         const NO_IMG = "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300' viewBox='0 0 300 300'%3e%3crect fill='%23f5f5f7' width='300' height='300'/%3e%3ctext fill='%23d2d2d7' font-family='sans-serif' font-size='20' font-weight='600' x='50%25' y='50%25' text-anchor='middle'%3eShop.az%3c/text%3e%3c/svg%3e";
 
         let allProducts = [];
@@ -321,12 +323,13 @@
 
         async function loadProducts() {
             try {
-                const res = await fetch(API_URL + "/api/products");
+                // NETLIFY PROXY İLƏ MÜRACİƏT
+                const res = await fetch(API_URL + "/products");
                 const data = await res.json();
                 allProducts = Array.isArray(data) ? data : (data.result || []);
                 document.getElementById('loading').style.display = 'none';
                 renderGrid(allProducts);
-            } catch(e) {}
+            } catch(e) { console.error(e); }
         }
 
         function renderGrid(products) {
@@ -338,7 +341,16 @@
                 const id = p.id || p.Id;
                 let img = NO_IMG;
                 const raw = p.coverPhoto || p.imagePath || p.imageUrl;
-                if(raw) img = raw.startsWith('http') ? raw : API_URL + "/" + raw;
+                
+                // Şəkil linklərini düzəltmək
+                if(raw) {
+                     if(raw.startsWith('http')) img = raw;
+                     else {
+                         // Əgər API şəkilləri serverdə saxlayırsa, bura serverin əsl ünvanı lazımdır
+                         // Netlify proxy yalnız /api üçün işləyir.
+                         img = "http://195.26.245.5:9505/" + raw; 
+                     }
+                }
 
                 grid.innerHTML += `
                     <div class="card" onclick="addToCart('${id}', '${name}', ${price}, '${img}')">
@@ -383,12 +395,12 @@
                     <div class="cart-item">
                         <img src="${item.img}" onerror="this.src='${NO_IMG}'">
                         <div style="flex-grow:1">
-                            <div style="font-weight:600; color:var(--text-main)">${item.name}</div>
+                            <div style="font-weight:600">${item.name}</div>
                             <div style="color:var(--text-muted)">${item.price} ₼</div>
                         </div>
                         <div style="display:flex; align-items:center; gap:12px; background:var(--input-bg); padding:5px 10px; border-radius:12px">
                             <span style="cursor:pointer; font-weight:700; color:var(--primary)" onclick="updateItem(${index}, -1)">-</span>
-                            <span style="font-weight:600; color:var(--text-main)">${item.count}</span>
+                            <span style="font-weight:600">${item.count}</span>
                             <span style="cursor:pointer; font-weight:700; color:var(--primary)" onclick="updateItem(${index}, 1)">+</span>
                         </div>
                         <i class="fas fa-trash" style="margin-left:10px; color:#ff3b30; cursor:pointer" onclick="updateItem(${index}, -999)"></i>
@@ -434,7 +446,8 @@
             const u = document.getElementById('logUser').value;
             const p = document.getElementById('logPass').value;
             try {
-                const res = await fetch(API_URL + "/api/auth", {
+                // NETLIFY PROXY İLƏ MÜRACİƏT
+                const res = await fetch(API_URL + "/auth", {
                     method: 'POST', headers: {'Content-Type':'application/json'},
                     body: JSON.stringify({username: u, password: p})
                 });
@@ -444,7 +457,7 @@
                     localStorage.setItem('token', tk);
                     if(!localStorage.getItem('name')) localStorage.setItem('name', u);
                     location.reload();
-                } else alert("Giriş uğursuz: Şifrə və ya istifadəçi adı səhvdir.");
+                } else alert("Məlumatlar səhvdir.");
             } catch(e) { alert("Server xətası."); }
         }
 
@@ -463,25 +476,16 @@
                 phoneNumber: "+994500000000"
             };
             try {
-                const res = await fetch(API_URL + "/api/clients", {
+                // NETLIFY PROXY İLƏ MÜRACİƏT
+                const res = await fetch(API_URL + "/clients", {
                     method: 'POST', headers: {'Content-Type':'application/json'},
                     body: JSON.stringify(payload)
                 });
-                
                 if(res.ok) {
                     localStorage.setItem('name', name);
                     login(user, pass);
-                } else {
-                    // Serverdən gələn dəqiq xətanı oxu
-                    const text = await res.text();
-                    try {
-                        const jsonErr = JSON.parse(text);
-                        alert("Xəta: " + (jsonErr.message || "İstifadəçi adı artıq tutulub."));
-                    } catch(e) {
-                        alert("Xəta: İstifadəçi adı artıq mövcud ola bilər.");
-                    }
-                }
-            } catch(e) { alert("Server xətası."); }
+                } else alert("İstifadəçi adı artıq mövcuddur.");
+            } catch(e) { alert("Server xətası"); }
         }
 
         function logout() {
